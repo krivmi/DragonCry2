@@ -1,0 +1,60 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 28.12.2017, 13:07:25
+    Author     : Jerry
+*/
+
+* {
+margin:0;
+padding:0;}
+#bodycko{
+   background-image: url(pozadidrak.png);
+}
+#obal { float: none;
+             position: relative;
+            width: 1000px;
+            height: auto;   
+              margin-left: auto;     
+             margin-right: auto;    
+    
+    
+}
+#nadpis { width: 290px;
+          height:200px;
+          background-color: grey;
+          float:left;
+          margin-top: 20px;
+    
+}
+#lista { width: 690px;
+          height: 200px;
+          background-color: grey;
+          float: right;
+          margin-top: 20px;
+          
+}
+#stredni { width: 1000px;
+          height: 100px;
+          background-color: grey;
+          float:left;
+          margin-top: 20px;
+    
+}
+#mujDrakAnimace { width: 640px;
+                  height: 480px;
+                   margin-top: 20px;
+                  border: black solid ;
+                  position: relative;
+                  left:180px;
+                  float: left;
+                  background-image: url(PozadiDrak.jpg)
+                  
+                  
+          
+   
+    
+}
