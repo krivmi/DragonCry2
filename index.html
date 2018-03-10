@@ -81,53 +81,7 @@
         var MujDrak = new Image();
         MujDrak.src = "./Drak_gif3.png";
          //tady si zadefinuji vznik překážek
-         
-      var myGameArea = {
-   
-    start : function() {
-       document.getElementById("mujDrakAnimace")
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.frameNo = 0;        
-        this.interval = setInterval(gameLoop, 20);
-    },
-    clear : function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    },
-    stop : function() {
-        clearInterval(this.interval);
-    }
-}
-
-         
-        function component(width, height, color, x, y, type) {
-                 this.type = type;
-                 this.width = width;
-                 this.height = height;
-                 this.speedX = 0;
-                 this.speedY = 0;    
-                 this.x = x;
-                 this.y = y;    
-                     this.update2 = function() {
-                         
-        ctx = canvas.getContext("2d");
-        if (this.type == "text") {
-      ctx.font = this.width + " " + this.height;
-      ctx.fillStyle = color;
-      ctx.fillText(this.text, this.x, this.y);
-    } else {
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
-    this.newPos = function() {
-        this.x += this.speedX;
-        this.y += this.speedY;        
-             }    
-        }
-    }
-
-            
-        
+      
         function gameLoop() {
             // tomuhle příkazu se to furt volá dokola => nekonečná smyčka
            
@@ -155,31 +109,48 @@
             // tu si nastavíš jakoby objekt který bude mít vlastnosti tohoto objektu
             var nastaveniDraka = {
            
+            frameIndex: 0,
+                tickCount: 0,
+                ticksPerFrame: 4,
+                numberOfFrames : numberOfFrames || 1,
+                //konstruktor
+            context : options.context,  //volá mi to proměnné z options
+            width: options.width,
+            height: options.height,
+            sx: options.sx,
+            sy: options.sy,
+            dx: options.dx,
+            dy: options.dy,
+            image: options.image,
+            loop: options.loop || true,
+        
+        /*var nastavenimyObstacle = {
+           
             frameIndex = 0,
                 tickCount = 0,
                 ticksPerFrame = 4,
                 numberOfFrames = options.numberOfFrames || 1,
                 //konstruktor
-            nastaveniDraka:context = options.context,  //volá mi to proměnné z options
-            nastaveniDraka:width = options.width,
-            nastaveniDraka:height = options.height,
-            nastaveniDraka:sx = options.sx,
-            nastaveniDraka:sy = options.sy,
-           nastaveniDraka:dx = options.dx,
-            nastaveniDraka:dy = options.dy,
-            nastaveniDraka:image = options.image,
-            nastaveniDraka:loop = options.loop || true,
-       
-
+            myObstacle:context = options.context,  //volá mi to proměnné z options
+            myObstacle:width = options.width,
+            myObstacle:height = options.height,
+            myObstacle:sx = options.sx,
+            myObstacle:sy = options.sy,
+            myObstacle:dx = options.dx,
+            myObstacle:dy = options.dy,
+            myObstacle:image = options.image,
+            myObstacle:loop = options.loop || true,
+        },
+*/
           
             // tohle to vypíše na canvas
-            nastaveniDraka:render = function () {
+            render : function () {
                 //vykreslí mi toho draka, aby tam ty jeho obrázky vždycky nezůstávaly(vezme a vymizí to)
-                nastaveniDraka.context.clearRect(that.dx,that.dy, that.width, that.height); 
+                nastaveniDraka.context.clearRect(nastaveniDraka.dx,nastaveniDraka.dy, nastaveniDraka.width, nastaveniDraka.height); 
                 
                 nastaveniDraka.context.drawImage( // vykreslí animaci
                     nastaveniDraka.image,
-                    frameIndex * that.width / numberOfFrames,
+                    frameIndex * nastaveniDraka.width / numberOfFrames,
                     0,
                     nastaveniDraka.width / numberOfFrames,
                     nastaveniDraka.height,
@@ -192,7 +163,7 @@
                    
                    );
             },
-           nastaveniDraka:crashWith = function(otherobj) {
+           crashWith : function(otherobj) {
                  var myleft = that.dx;
                  var myright = that.dx; + (that.width);
                  var mytop = that.dy;
@@ -210,7 +181,7 @@
                  }
                  return crash;
     }, 
-            nastaveniDraka:stopMove = function() {
+           stopMove : function() {
                  alert("narazili jste!");
              },
         
@@ -218,14 +189,7 @@
             // tu vždy posunu souřadnice o kolik se to má v dalším renderu oříznout
             // když je to na konci, tak se zas hodí na začátek a furt dokola
             
-            nastaveniDraka:update = function() {  
-                
-                
-                 /*Drak.dx += 2;   //pak na rychlost
-                 that.newPos = function() {
-                         that.dx += that.speedX;
-                         that.dy += that.speedY; 
-                                 } */
+            update : function() {  
         //ovládání šipkami
                          if (Keys.up) {
                          Drak.dy+=2;
@@ -241,10 +205,10 @@
                 else if (Keys.right) {
                       Drak.dx-=1; //aby dozadu létal pomalu
                         } 
-                 myObstacle.x += -1;
+                
                  
                 tickCount += 1;
-                console.log("loop:" + that.loop);
+                console.log("loop:" + nastaveniDraka.loop);
                 console.log(tickCount);
                 if (tickCount > ticksPerFrame) {
                     tickCount = 0;
@@ -254,7 +218,7 @@
                     if (frameIndex < numberOfFrames - 1) {
                         //hodí mi to další obrázek
                         frameIndex += 1;
-                    } else if (that.loop) {
+                    } else if (nastaveniDraka.loop) {
                         frameIndex = 0;
                     }
                 }
@@ -263,8 +227,19 @@
           }    
         };
     }
-        // zde vytvářím hodnoty funkci options, kterou mám výše 
-        var Drak = sprite(options.nastaveniDraka);
+        // zde zadávám atributy draka
+        var Drak = sprite(nastaveniDraka.options);
+            context = canvas.getContext("2d"), //nastudovat jak se pouzivaji ty zavorky ,- () funkce, [] nějaký array, {} objekt, nebo tělo funkce
+            width = 1007,
+            height = 100,
+            // referenční obrázek
+            image = MujDrak,
+            // co kolik framů se bude měnit obrázek
+            numberOfFrames = 10,
+            dx = 60,
+            dy = 60,
+        
+      /* var myObstacle = sprite(options.nastavenimyObstacle);
             context; canvas.getContext("2d"), //nastudovat jak se pouzivaji ty zavorky ,- () funkce, [] nějaký array, {} objekt, nebo tělo funkce
             width; 1007,
             height; 100,
@@ -273,9 +248,8 @@
             // co kolik framů se bude měnit obrázek
             numberOfFrames; 10,
             dx; 60,
-            dy; 60,
-            
-            
+            dy; 60,     
+            */
       
         // tu máš zas to samé jako nahoře
         // start game se zavolá a
