@@ -77,10 +77,22 @@ box-sizing: border-box;}
 #mujDrakAnimace { width: 640px;
                   height: 480px;
                    position: relative;
-                  float: left; 
+                 background-image: url(AnimationPozadi3.jpg) ;
                   border: black solid ;
-                  background-image: url(PozadiDrak.jpg)
-  
+                  background-size: cover;
+                 float: left;
+                  background-repeat: repeat-x; 
+                  animation: animate 15s linear infinite;  /*nekonečná smyčka běžící animace*/
+                  
+}
+@keyframes animate{ from{
+                        background-position: 640px 0px;
+                    }
+                    to{
+                         background-position: 100% 0px;
+                    }
+    
+    
 }
 #platno{  margin-left: auto;
           margin-right: auto;

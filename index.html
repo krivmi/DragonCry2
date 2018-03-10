@@ -64,12 +64,7 @@
     
 
     <script>
-        /*
-        *   UŽ MĚ TO TU SERE :D
-        */
-        // tu si getneš canvas z documentu
-        
-        
+       
         var myScore;
         var end;
     
@@ -78,109 +73,135 @@
                  canvas.width = 640;
                 canvas.height = 480;
                 
-               /* var ctx=canvas.getContext("2d");
-                ctx.fillStyle="#FF0000";
-                ctx.fillRect(0,0,640,480);
-       */
+              
       
        var myObstacle;
         
-        // vytvoříš Image() ze kterého pak bereš slicy na ten sprite !!! < to nemáš v tom druhém.
+        // vytvořím si Image() ze kterého bere kousky sprite
         var MujDrak = new Image();
         MujDrak.src = "./Drak_gif3.png";
+         //tady si zadefinuji vznik překážek
          
-        function component(width, height, color, x, y) {
+      var myGameArea = {
+   
+    start : function() {
+       document.getElementById("mujDrakAnimace")
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;        
+        this.interval = setInterval(gameLoop, 20);
+    },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    }
+}
+
+         
+        function component(width, height, color, x, y, type) {
+                 this.type = type;
                  this.width = width;
                  this.height = height;
                  this.speedX = 0;
                  this.speedY = 0;    
                  this.x = x;
-                    this.y = y;    
-                     this.update = function() {
+                 this.y = y;    
+                     this.update2 = function() {
+                         
         ctx = canvas.getContext("2d");
+        if (this.type == "text") {
+      ctx.font = this.width + " " + this.height;
+      ctx.fillStyle = color;
+      ctx.fillText(this.text, this.x, this.y);
+    } else {
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY;        
-    }    
-}
+             }    
+        }
+    }
 
             
-        /*  To je to samé jako startGame() jen to nikde nevoláš a je to tu k ničemu
-        *   použij to tak že v start game zavoláš tohle
-        *   bude to dávat smysl.
-        */
+        
         function gameLoop() {
-            // tady tohle z toho dělá nekonečnou smyčku, voláš se to furt dokola díky tomuhle příkazu
-            // googli co to přesně dělá
+            // tomuhle příkazu se to furt volá dokola => nekonečná smyčka
+           
+            
             window.requestAnimationFrame(gameLoop);
-            // voláš update a render na Draka
+            // volám update a render na Draka
             if (Drak.crashWith(myObstacle)) {
-                    Drak.stop();
+                    alert("narazili jste!");
                  } else {
+            /* myGameArea.clear();*/
+  
+            
+           myObstacle.update2();
+         
             Drak.update();
-            myObstacle.update();
             Drak.render();
+            
+           
             }
         }
-        // tu definuješ funkci
-        // chová se podobně jako objekt nebo classa v jave něbo tak
-        // má attributy a funcke v sobě
+        // tu definuji funkci sprite, která má v sobě atributy a funkce
+        // chová se podobně jako objekt nebo classa v jave 
+       
         function sprite(options) {
             // tu si nastavíš jakoby objekt který bude mít vlastnosti tohoto objektu
-            var that = {};
-            // tu nastavíš pár proměnných
+            var nastaveniDraka = {
+           
             frameIndex = 0,
                 tickCount = 0,
                 ticksPerFrame = 4,
-                numberOfFrames = options.numberOfFrames || 1;
-            // tu nastavíš attributy podle options
-            that.context = options.context;
-            that.width = options.width;
-            that.height = options.height;
-            that.sx = options.sx;
-            that.sy = options.sy;
-            that.dx = options.dx;
-            that.dy = options.dy;
-           
-            that.image = options.image;
-            that.loop = options.loop || true;
-            // ^^^ tohle celé je něco jako konstruktor
+                numberOfFrames = options.numberOfFrames || 1,
+                //konstruktor
+            nastaveniDraka:context = options.context,  //volá mi to proměnné z options
+            nastaveniDraka:width = options.width,
+            nastaveniDraka:height = options.height,
+            nastaveniDraka:sx = options.sx,
+            nastaveniDraka:sy = options.sy,
+           nastaveniDraka:dx = options.dx,
+            nastaveniDraka:dy = options.dy,
+            nastaveniDraka:image = options.image,
+            nastaveniDraka:loop = options.loop || true,
+       
 
-            // tu je render
+          
             // tohle to vypíše na canvas
-            that.render = function () {
-                // vezme a vymizí to
-                that.context.clearRect(that.dx,that.dy, that.width, that.height); //vyčistí mi toho draka, aby tam ty jeho obrázky vždycky nezůstávaly
-                // vykreslí, mrkni na tu funkci na net
-                // mrkni na ty parametry, dá ti to smysl jak to funguje s tím
-                // obrázkem který máš nahoře zadefinovaný a jak ho to ořezává
-                that.context.drawImage( // Draw the animation
-                    that.image,
+            nastaveniDraka:render = function () {
+                //vykreslí mi toho draka, aby tam ty jeho obrázky vždycky nezůstávaly(vezme a vymizí to)
+                nastaveniDraka.context.clearRect(that.dx,that.dy, that.width, that.height); 
+                
+                nastaveniDraka.context.drawImage( // vykreslí animaci
+                    nastaveniDraka.image,
                     frameIndex * that.width / numberOfFrames,
                     0,
-                    that.width / numberOfFrames,
-                    that.height,
-                    that.dx,
-                    that.dy,
-                    that.width / numberOfFrames,
-                    that.height,
+                    nastaveniDraka.width / numberOfFrames,
+                    nastaveniDraka.height,
+                    nastaveniDraka.dx,
+                    nastaveniDraka.dy,
+                    
+                    nastaveniDraka.width / numberOfFrames,
+                    nastaveniDraka.height,
                     
                    
                    );
-            };
-           that.crashWith = function(otherobj) {
-                 var myleft = this.x;
-                    var myright = this.x + (this.width);
-                    var mytop = this.y;
-                 var mybottom = this.y + (this.height);
-                  var otherleft = otherobj.x;
-                  var otherright = otherobj.x + (otherobj.width);
-                  var othertop = otherobj.y;
-                  var otherbottom = otherobj.y + (otherobj.height);
-                  var crash = true;
+            },
+           nastaveniDraka:crashWith = function(otherobj) {
+                 var myleft = that.dx;
+                 var myright = that.dx; + (that.width);
+                 var mytop = that.dy;
+                 var mybottom = that.dy + (that.height);
+                 var otherleft = otherobj.x;
+                 var otherright = otherobj.x + (otherobj.width);
+                 var othertop = otherobj.y;
+                 var otherbottom = otherobj.y + (otherobj.height);
+                 var crash = true;
                   if ((mybottom < othertop) ||
                             (mytop > otherbottom) ||
                             (myright < otherleft) ||
@@ -188,25 +209,29 @@
                     crash = false;
                  }
                  return crash;
-    } 
-            /* that.stop = function() {
-                 return Drak.dx = 0;
-             }*/
+    }, 
+            nastaveniDraka:stopMove = function() {
+                 alert("narazili jste!");
+             },
         
-            // update
-            // tu vždy posuneš o kolik se to má v dalším renderu ožíznou
+            
+            // tu vždy posunu souřadnice o kolik se to má v dalším renderu oříznout
             // když je to na konci, tak se zas hodí na začátek a furt dokola
-            // popřemýšlej nad tím bve spojitzosti drawImage
-            that.update = function () {
-                 /*Drak.dx += 2;
+            
+            nastaveniDraka:update = function() {  
+                
+                
+                 /*Drak.dx += 2;   //pak na rychlost
                  that.newPos = function() {
                          that.dx += that.speedX;
                          that.dy += that.speedY; 
                                  } */
+        //ovládání šipkami
                          if (Keys.up) {
                          Drak.dy+=2;
+                         
                                 }
-                else if (Keys.down) {  // both up and down does not work so check excl.
+                else if (Keys.down) {  
                      Drak.dy-=2;
                         }
 
@@ -214,58 +239,69 @@
                      Drak.dx+=2;
                         }
                 else if (Keys.right) {
-                      Drak.dx-=2;
+                      Drak.dx-=1; //aby dozadu létal pomalu
                         } 
-                 
+                 myObstacle.x += -1;
                  
                 tickCount += 1;
                 console.log("loop:" + that.loop);
                 console.log(tickCount);
                 if (tickCount > ticksPerFrame) {
                     tickCount = 0;
-                    // If the current frame index is in range
+                    // Pokud je konkrétní obrázek v dosahu
                     console.log("ticketsperframe:" + ticksPerFrame);
                     console.log("frameIndex:" + frameIndex);
                     if (frameIndex < numberOfFrames - 1) {
-                        // Go to the next frame
+                        //hodí mi to další obrázek
                         frameIndex += 1;
                     } else if (that.loop) {
                         frameIndex = 0;
                     }
                 }
-            }
-            return that;
-        }
-        // vytváříš instanci spritu a v {} jsou options, které mu dáváš do "konstruktoru"
-        var Drak = sprite({
-            context: canvas.getContext("2d"), //nastudovat jak se pouzivaji ty zavorky ,- () funkce, [] nějaký array, {} objekt, nebo tělo funkce
-            width: 1007,
-            height: 100,
+           
+            return nastaveniDraka;
+          }    
+        };
+    }
+        // zde vytvářím hodnoty funkci options, kterou mám výše 
+        var Drak = sprite(options.nastaveniDraka);
+            context; canvas.getContext("2d"), //nastudovat jak se pouzivaji ty zavorky ,- () funkce, [] nějaký array, {} objekt, nebo tělo funkce
+            width; 1007,
+            height; 100,
             // referenční obrázek
-            image: MujDrak,
+            image; MujDrak,
             // co kolik framů se bude měnit obrázek
-            numberOfFrames: 10,
-            dx: 60,
-            dy: 60   
-        });
+            numberOfFrames; 10,
+            dx; 60,
+            dy; 60,
+            
+            
       
         // tu máš zas to samé jako nahoře
         // start game se zavolá a
-        // 1. se řekne woknu aby to volalo pokaždé, když může a je vykreslen nový frame v canvas
+        // 1. oknu se zadá, aby se volalo pokaždé, když může a je vykreslen nový frame v canvas
         function startGame() {
-            // viz gameLoop
+            // podobné gameLoopu, 
             window.requestAnimationFrame(startGame);
-            myObstacle  = new component(10, 200, "black", 300, 120);  
-            myObstacle.update();
+          
+          
+             
             Drak.update();
             Drak.render();
-            
+            myObstacle  = new component(10, 200, "black", 300, 0);  
+            myScore = new component("30px", "Ariel", "black", 480, 40, "text");
+      
+            myObstacle.update2();
+            myScore.text="SCORE: ";
+             myScore.update2();
+           /* myGameArea.start();*/
+             
             
         }
         // počká až se načte MujDrak (to je ten obrázek)
         // a pak spustí hru
         MujDrak.addEventListener("load", startGame);
-        var Keys = {
+        var Keys = {   //ovládání šipkami, zde zadávám, jak se sprite bude chovat, když mám zmáčklou šipku
         up: false,
         down: false,
         left: false,
@@ -275,12 +311,12 @@
     var kc = e.keyCode;
     e.preventDefault();
 
-    if      (kc === 39) Keys.left = true;  // only one key per event
-    else if (kc === 40) Keys.up = true;    // so check exclusively
+    if      (kc === 39) Keys.left = true;  //pouze jedna zmáčknutá klávesa
+    else if (kc === 40) Keys.up = true;    
     else if (kc === 37) Keys.right = true;
     else if (kc === 38) Keys.down = true;
 };
-
+   //díky těmto dvěma funkcím mi ten drak umí létat diagonálně a bez trhání(zmáčknutí obou šipek)
 window.onkeyup = function(e) {
     var kc = e.keyCode;
     e.preventDefault();
@@ -291,33 +327,7 @@ window.onkeyup = function(e) {
     else if (kc === 38) Keys.down = false;
 }; 
   
-   
-
-
-        /*
-        *   na konec nekolik doporučení
-        *   1. čti si co jaká funkce dělá
-        *   2. pojmenovávej si věci lépe, tzn. MujDrak -> MujDrakImage
-        *       je z toho hned zřejmé že nejde o draja, ale o jeho image ...
-        *   3. než zkopíruješ kód, tak mu porozuměj, nebo naopak
-        *   4. pokud mu nerozumíš, jdi krok po kroku a zkus to pochopit
-        *       ručně si ten kód odkrokuj, co se změní, proč se to změní a jaký to má dopad
-        *   5. roumíš tomu? ne?  -> jdi na 1.
-        *                   ano? -> jdi dál
-        *   ... aniž bys pochopil co jak proč co dělá, tak se nepohneš
-        *   doporučuji něco zkopírovat a pak to různě upravovat a zkoušet co to dělá
-        *   postupně to pak pochopíš
-        *   ( teď něco k tomu kodu, nebudu to přepisovat, protože ten index2.html je hotový bordel,
-        *     doporučuji ti to celé přepsat tak ať to dává smysl
-              tj. zadefinuj si co chceš a žádáš po komponentě a tak insto po spritu
-                  přemýšlej nad tím co píšeš obecně a až pak konkrétně
-                    - sprit je to co se bude renderovat a má polohu na canvas a může se updatovat, čímž se
-                      zpracuje frame toho spritu, jeho poloha atd...
-                    - na sprite bude koukat nějaký key listener (googli) který ho bde ovládat
-                    - můžeš udělat něco jako MůjDrak, který bude mít v sobě sprite a bude mít v sobě key listener
-                    - a pak něco jako Obstacle který bude mít v sobě polohu a každým updatem se konstatně posune tap poloha
-                    ... pak mi napiš co a jak dál ...
-        */
+       
     </script>
 
 </body>
