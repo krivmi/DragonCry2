@@ -8,20 +8,51 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 
     <link rel="stylesheet" href="DragonCryCSS.css" type="text/css"/>
-    
+     
     <title>Dragon Cry</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+  //přidám si skroll pro všechny A
+  $("a").on('click', function(event) {
+
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== " ") {
+      // Prevent default anchor click behavior ?????
+      event.preventDefault();
+
+    //nastavím si hash
+      var hash = this.hash;
+
+      // použiji si jquery animate method, aby se mi to krásně srolovalo
+      // zadám, jak dlouho by měla doba výjezdu trvat 
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 800, function(){
+   
+        
+        window.location.hash = hash;
+      });
+    } 
+  });
+});
+        </script>
 </head>
 
 <body id="bodycko">
     
-
+    <div id="suprise">
+                   Hru ovládejte šipkami!
+                        <br>
+                    <img src="sipky3.png" width="300" height="173" alt="Šipky"/>
+                </div>
        
         <div id="lista">
             <div class="menu">
-             <span class="span" style="position: relative; left: 0px;  top:0px; ;"><a href="index.html"><img src="drak_icon3.png" width="80" height="60" onmouseover=" this.src = 'drak_icon_hover.png';" onmouseout="this.src = 'drak_icon3.png';" alt="drak_icon2"/></a> </span>   
-             <span class="span" style="position: relative; left: 600px;  bottom:25px; ;"><a class="alista" href="oprojektu.html">O projektu</a> </span>
-             <span class="span" style="position: relative; left: 700px;  bottom:25px; ;"><a class="alista" href="draci.html">Draci</a> </span>
-             <span class="span" style="position: relative; left: 800px;  bottom:25px; ;"><a class="alista" href="knizky.html">Knížky</a> </span>
+             <span class="span" style="position: relative; left: 0px;  top:0px; ;">     <a href="index.html"><img src="drak_icon3.png" width="80" height="60" onmouseover=" this.src = 'drak_icon_hover.png';" onmouseout="this.src = 'drak_icon3.png';" alt="drak_icon2"/></a> </span>   
+             <span class="span" style="position: relative; left: 600px;  bottom:25px; ;"><a class="alista" href="#oprojektu">O projektu</a> </span>
+             <span class="span" style="position: relative; left: 700px;  bottom:25px; ;"><a class="alista" href="#vitejte">O hře</a> </span>
+             <span class="span" style="position: relative; left: 800px;  bottom:25px; ;"><a class="alista" href="#ohre">Hra</a> </span>
             </div>
             
           
@@ -31,27 +62,55 @@
 
 
         </div>
-            
+           
       <div id="obalHry">  
-        
+         
             <div id="stredni">
-                <p class="nadpisy">Vítejte,</p> <p class="pismo"> tyto stránky vznikly v rámci maturitního projektu, kde jsem měl ukázat znalosti v oblasti tvoření webu a hry 
+                 
+                <p class="nadpisy" id="vitejte">Vítejte,</p> <p class="pismo"> tyto stránky vznikly v rámci maturitního projektu, kde jsem měl ukázat znalosti v oblasti tvoření webu a hry 
                 v programovacím jazyku JavaScript, následně také HTML5 a CSS. Doufám, že se Vám stránky budou líbit a že si hraní hry užijete stejně,
                 jako mě bavilo hru vytvářet. Hodně štěstí! </p>
                 <br>
                 
-                 <p class="nadpisy">O hře</p>
-                 <p class="pismo">   Jako hru jsem si zvolil klasickou 2D plošinovku, ve které se budete vyhýbat překážkám, jakmile se frak dotkne 
+                 <p class="nadpisy" id="ohre">O hře</p>
+                 <p class="pismo">   Jako hru jsem si zvolil klasickou 2D plošinovku, ve které se budete vyhýbat překážkám, jakmile se drak dotkne 
                  takové překážky, hra skončí. Zkuste tedy vydržet co nejdéle, čím déle vydžíte, tím větší skore se Vám přičte. A nezapomeňte si dávat pozor na zrychlení!
                  Hra se ovládá šipkami na klávesnici. </p>
                 <br>
                 
                 
                 
-                <div id="platno"><canvas id="mujDrakAnimace" >
+                
+                <div id="platno" onmouseover="document.getElementById('suprise').style.visibility='visible'" onmouseout="document.getElementById('suprise').style.visibility='hidden'">
+                    
+                    <canvas id="mujDrakAnimace"  >
                 </canvas>
                 </div>
+                <br><br>
+                <p class="nadpisy" id="oprojektu">O projektu</p> <p class="pismo"> Projekt jsem začal tvořit už v prosinci roku 2017.
+                Což je celkem brzo na vytváření maturitního projektu, oproti mým spolužákům. Už od začátku mne provázely různé komplikace. Na začátku listopadu,
+                jsem měl nápad, že udělám hru, kde bude fungovat gravitace, skákání nebo různé kolize. Také jsem musel vymyslet název a
+                obsah. Po minutovém rozmýšlení jsem měl hned jasno...Dragon Cry. Popravdě ani nevím, jak jsem na tento název přišel,
+                ale to není podstatné, podstatné bylo, jak takovou hru naprogramuji. A tak jsem se dal do práce. 
+                Tehdy jsem však nečekal, jak to pro mě bude těžké, protože programovací jazyk JavaScript jsem znal jen okrajově, při 
+                tvoření webových stránek ve třetím ročníku, kdy jsme ho přímo nepsali, ale pouze vkládali fo HTML podle tutoriálu. 
+                Byla to tedy dost drsná výzva v tomto jazyku napsat hru. Zpočátku se mi velmi nedařilo, nefungovalo mi plátno, měl jsem problémy 
+                s vývojovým programem, problémy s načítáním draka, atd. </p>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             </div>
+          
+          
       <div id ="zapati">    
         <div class="menu"> 
     <p style="position: relative;top:18px">
@@ -65,9 +124,9 @@
 
     <script>
        
-        var myScore;
+        var Score = 0;
         var end;
-    
+        
         var canvas = document.getElementById("mujDrakAnimace");
         
                  canvas.width = 640;
@@ -81,11 +140,21 @@
         var MujDrak = new Image();
         MujDrak.src = "./Drak_gif3.png";
          //tady si zadefinuji vznik překážek
-      
+         
+        function drawScore(){
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "blue";
+            ctx.fillText("Skore: " + Score, 400,20);
+        }
+        function countingScore(){
+            if(Drak.render === true){
+                score++;
+            }
+        }
         function gameLoop() {
             // tomuhle příkazu se to furt volá dokola => nekonečná smyčka
            
-            
+           
             window.requestAnimationFrame(gameLoop);
             // volám update a render na Draka
             if (Drak.crashWith(myObstacle)) {
@@ -142,9 +211,8 @@
             myObstacle:loop = options.loop || true,
         },
 */
-          
             // tohle to vypíše na canvas
-            render : function () {
+            render : function() {
                 //vykreslí mi toho draka, aby tam ty jeho obrázky vždycky nezůstávaly(vezme a vymizí to)
                 nastaveniDraka.context.clearRect(nastaveniDraka.dx,nastaveniDraka.dy, nastaveniDraka.width, nastaveniDraka.height); 
                 
@@ -159,8 +227,7 @@
                     
                     nastaveniDraka.width / numberOfFrames,
                     nastaveniDraka.height,
-                    
-                   
+               
                    );
             },
            crashWith : function(otherobj) {
@@ -184,11 +251,8 @@
            stopMove : function() {
                  alert("narazili jste!");
              },
-        
-            
             // tu vždy posunu souřadnice o kolik se to má v dalším renderu oříznout
             // když je to na konci, tak se zas hodí na začátek a furt dokola
-            
             update : function() {  
         //ovládání šipkami
                          if (Keys.up) {
@@ -226,9 +290,9 @@
             return nastaveniDraka;
           }    
         };
-    }
+ }
         // zde zadávám atributy draka
-        var Drak = sprite(nastaveniDraka.options);
+        var Drak = sprite(nastaveniDraka);
             context = canvas.getContext("2d"), //nastudovat jak se pouzivaji ty zavorky ,- () funkce, [] nějaký array, {} objekt, nebo tělo funkce
             width = 1007,
             height = 100,
@@ -238,7 +302,7 @@
             numberOfFrames = 10,
             dx = 60,
             dy = 60,
-        
+      
       /* var myObstacle = sprite(options.nastavenimyObstacle);
             context; canvas.getContext("2d"), //nastudovat jak se pouzivaji ty zavorky ,- () funkce, [] nějaký array, {} objekt, nebo tělo funkce
             width; 1007,
@@ -262,13 +326,8 @@
              
             Drak.update();
             Drak.render();
-            myObstacle  = new component(10, 200, "black", 300, 0);  
-            myScore = new component("30px", "Ariel", "black", 480, 40, "text");
-      
-            myObstacle.update2();
-            myScore.text="SCORE: ";
-             myScore.update2();
-           /* myGameArea.start();*/
+            
+          
              
             
         }
