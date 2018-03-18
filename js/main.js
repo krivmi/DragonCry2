@@ -9,7 +9,7 @@ window.DragonCry = DragonCry || {};
 var DragonCry = {
   render: {
     width: 960,
-    height: 540,
+    height: 540
   },
   canvas: {
     canvas: document.getElementsByClassName('game-canvas')[0],
@@ -35,6 +35,7 @@ var DragonCry = {
         canvas.height,
       );
     }
+   
   },
   components: {
     obstacles: {
@@ -46,6 +47,7 @@ var DragonCry = {
       add() {
         that = DragonCry.components.obstacles;
         that.array.push(DragonCry.components.getSprite(that.options));
+        
       },
       move(index) {
         that = DragonCry.components.obstacles;
@@ -76,7 +78,7 @@ var DragonCry = {
         options.context = DragonCry.canvas.context;
         options.isObstacle = true;
         that.options = options;
-      },
+      }
     },
     getSprite: function (options) {
       return new DragonCry.components.sprite(options);
@@ -111,8 +113,36 @@ var DragonCry = {
         else if (DragonCry.events.keys.right) {
           this.dx += 2;
         }
-      }
+      },
+      this.crashWith = function(otherobj) {
+        var myleft = this.dx;
+        var myright = this.dx + (this.width);
+        var mytop = this.dy;
+        var mybottom = this.dy + (this.height);
+        var otherleft = otherobj.dx;
+        var otherright = otherobj.dx + (otherobj.width);
+        var othertop = otherobj.dy;
+        var otherbottom = otherobj.dy + (otherobj.height);
+        var crash = true;
+       if ((mybottom < othertop) ||
+               (mytop > otherbottom) ||
+               (myright < otherleft) ||
+               (myleft > otherright)) {
+           crash = false;
+        }
+        return crash;
+        console.log(otherobj)
+       
+    },
       this.update = function () {
+          for (var i = 0; i < DragonCry.components.obstacles.array.length; i++) {
+                
+           if(DragonCry.game.dragon.crashWith(DragonCry.components.obstacles.array[i])) {
+                    DragonCry.game.stop();
+                }  
+            }
+   
+ 
         this.move();
         this.tickCount += 1;
         if (this.tickCount > this.TPF) {
@@ -123,7 +153,10 @@ var DragonCry = {
             this.frameIndex = 0;
           }
         }
-      }
+        
+      
+     
+  },
       this.render = function () {
         if (this.image) {
           this.context.drawImage(
@@ -147,9 +180,10 @@ var DragonCry = {
         }
 
         if (this.isObstacle) {
+            
           this.context.clearRect(
             this.dx,
-            200,
+            100,
             this.width / this.NOF,
             150,
           );
@@ -181,7 +215,7 @@ var DragonCry = {
       }
     },
     initDragon() {
-      var dragonOptions = DragonCry.game.options.dragon
+      var dragonOptions = DragonCry.game.options.dragon;
       dragonOptions.context = DragonCry.canvas.context;
       dragonOptions.image = DragonCry.canvas.getDragonImage();
       DragonCry.game.dragon = DragonCry.components.getSprite(dragonOptions);
@@ -193,6 +227,7 @@ var DragonCry = {
       DragonCry.components.obstacles.render();
       DragonCry.game.dragon.update();
       DragonCry.game.dragon.render();
+  
     },
     startGame() {
       DragonCry.canvas.setupCanvas();
@@ -200,6 +235,9 @@ var DragonCry = {
       DragonCry.components.obstacles.init(DragonCry.game.options.obstacle);
       DragonCry.events.registerEvents();
       DragonCry.game.gameLoop();
+    },
+    stop(){
+        console.log("Narazili jste!");
     }
   },
   events: {
