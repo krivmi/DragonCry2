@@ -5,6 +5,98 @@
 *   2018
 */
 
+/*
+
+  Tu je popis:
+
+  1. vytvoří se object DragonCry
+  2. zavlá se na window.onload startGame
+  3. StartGame:
+
+    startGame() {
+      DragonCry.canvas.setupCanvas();
+      DragonCry.game.initDragon();
+      DragonCry.components.obstacles.init(DragonCry.game.options.obstacle);
+      DragonCry.events.registerEvents();
+      DragonCry.game.gameLoop();
+    },
+
+  a) Tohle volá setupCanvas kde se nastavápožadovaná výška a šířka vnitřně v canvasu
+  b) pak to inituje draka -> vytvoří ho a pak uloží do game.dragon
+  c) pak seinitují obstacles -> vytvoří se, tím se jim dají ty options z game.options.obstacle, ty se bnitřně uloží do
+     components.obstacles.options (možná tě mate že je tam nevidíš defaultně v kódu, tak attributa se tam přidává až pak)
+  d) zaregistrují se do window eventy na snímání kláves
+  e) spustí se gameLoop
+
+  4. gameLoop:
+
+    gameLoop() {
+      window.requestAnimationFrame(DragonCry.game.gameLoop);
+      DragonCry.canvas.clear();
+      DragonCry.components.obstacles.update();
+      DragonCry.components.obstacles.render();
+      DragonCry.game.dragon.update();
+      DragonCry.game.dragon.render();
+    },
+
+    a) requestAnimationFrame zavolá tuhle metodu až wokno bude moct znovu vykreslit to co se provdelo (to je metoda, která to loopuje)
+    b) vyčistí se canvas
+    c) updatují se obstacles:
+
+      update() {
+        that.cycle ++;
+        if (that.cycle >= that.renderCycle) {
+          that.cycle = 0;
+          that.renderCycle = (Math.random() * that.min_period) + that.max_period;
+          that.add();
+        }
+        for (var i = 0; i < that.array.length; i++) {
+          that.move(i);
+          if (that.array[i].dx + that.array[i].width <= 0) {
+            that.array.splice(i, 1);
+          }
+        }
+      },
+
+      a) inkrementuje se cyklus
+      b) když je právě renderovací cyklus, přidá se překážka
+      c) pak se proiteruje skrze všecky překážky, posunou se a ty které jsou již mimo viewport se smažou z toho pole
+
+    d) pak se překážky vyrenderují
+    e) updatuje se drak a a vyrenderuje(, to chápeš)
+
+    Jak se přidává překážka?
+
+      add() {
+        that = DragonCry.components.obstacles;
+        that.array.push(DragonCry.components.getSprite(that.options));
+      },
+
+    metoda add se volá z update u obstacles jak je psáno výše, tam se nastaví that jen jako zkratka aby ses nemusel odkazovat na celé jméno
+    tudíž tohle je ekvivalentní
+
+      add() {
+        DragonCry.components.obstacles.array.push(DragonCry.components.getSprite(DragonCry.components.obstacles.options));
+      },
+
+    ale předešlý zápis je kratší, takhle funguje to that i u ostatních.
+
+    vysvětlím podrobně:
+
+      - DragonCry.components.obstacles.array.push()
+
+      tohle pushne (přidá) do pole překážek nový prvek
+
+      - DragonCry.components.getSprite()
+
+      tohle vytvoří nový sprite a navrátí ho
+
+      - DragonCry.components.obstacles.options
+
+      a nakonec tohle navrací options které jsi inicializoval a uložil ři startGame jak jsme psal výše.
+
+*/
+
 window.DragonCry = DragonCry || {};
 var DragonCry = {
   render: {
@@ -35,7 +127,7 @@ var DragonCry = {
         canvas.height,
       );
     }
-   
+
   },
   components: {
     obstacles: {
@@ -47,7 +139,6 @@ var DragonCry = {
       add() {
         that = DragonCry.components.obstacles;
         that.array.push(DragonCry.components.getSprite(that.options));
-        
       },
       move(index) {
         that = DragonCry.components.obstacles;
@@ -132,17 +223,17 @@ var DragonCry = {
         }
         return crash;
         console.log(otherobj);
-       
+
     },
       this.update = function () {
           for (var i = 0; i < DragonCry.components.obstacles.array.length; i++) {
-                
+
            if(DragonCry.game.dragon.crashWith(DragonCry.components.obstacles.array[i])) {
                     DragonCry.game.stop();
-                }  
+                }
             }
-   
- 
+
+
         this.move();
         this.tickCount += 1;
         if (this.tickCount > this.TPF) {
@@ -153,9 +244,9 @@ var DragonCry = {
             this.frameIndex = 0;
           }
         }
-        
-      
-     
+
+
+
   },
       this.render = function () {
         if (this.image) {
@@ -180,7 +271,7 @@ var DragonCry = {
         }
 
         if (this.isObstacle) {
-            
+
           this.context.clearRect(
             this.dx,
             100,
@@ -227,7 +318,6 @@ var DragonCry = {
       DragonCry.components.obstacles.render();
       DragonCry.game.dragon.update();
       DragonCry.game.dragon.render();
-  
     },
     startGame() {
       DragonCry.canvas.setupCanvas();
