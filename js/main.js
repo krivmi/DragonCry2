@@ -22,7 +22,7 @@ var DragonCry = {
     },
     getDragonImage: function () {
       var img = new Image();
-      img.src = "./img/drak_gif3_test.png";
+      img.src = "./img/Drak_gif3.png";
       return img;
     },
     clear() {
@@ -41,8 +41,10 @@ var DragonCry = {
     obstacles: {
       cycle: 0,
       renderCycle: 0,
-      min_period: 120,
-      max_period: 300,
+      min_period: 70,
+      max_period: 100,
+      minHeight: 20,
+      maxHeight: 200,
       array: [],
       add() {
         that = DragonCry.components.obstacles;
@@ -51,13 +53,21 @@ var DragonCry = {
       },
       move(index) {
         that = DragonCry.components.obstacles;
-        that.array[index].dx -= 1;
+        that.array[index].dx -= 2;
+        
       },
       update() {
         that.cycle ++;
         if (that.cycle >= that.renderCycle) {
           that.cycle = 0;
           that.renderCycle = (Math.random() * that.min_period) + that.max_period;
+          that.options.dy = Math.floor((Math.random() * 300) + 0);
+          that.options.height = Math.floor((Math.random() * 440) + 50);
+          if(that.options.height + that.options.dy > 440)
+              console.log("Moc velké");
+              that.options.height = Math.floor((Math.random() * 300) + 100);
+          
+                
           that.add();
         }
         for (var i = 0; i < that.array.length; i++) {
@@ -77,8 +87,25 @@ var DragonCry = {
         that = DragonCry.components.obstacles;
         options.context = DragonCry.canvas.context;
         options.isObstacle = true;
-        that.options = options;
+         that.options = options;
+        
+      
+        
       }
+    },
+    Score: {
+       score:0,
+       updateScore() {
+           var thatSc = DragonCry.components.Score;
+           thatSc.score++;
+       },
+       renderScore() {
+           var thatSc = DragonCry.components.Score;
+           DragonCry.canvas.context.fillText("Score: "+ thatSc.score, 800, 60);
+           DragonCry.canvas.context.font = "25px Arial";
+           DragonCry.canvas.context.fillStyle = "#0095DD";
+       },
+       
     },
     getSprite: function (options) {
       return new DragonCry.components.sprite(options);
@@ -101,26 +128,29 @@ var DragonCry = {
       this.image = initial.image;
       this.loop = initial.loop || true;
       this.isObstacle = initial.isObstacle || false;
+      this.isScore = initial.isScore || false;
+      this.minHeight=initial.minHeight;
+      this.maxHeight=initial.maxHeight;
 
       this.move = function () {
         if (DragonCry.events.keys.up) {
-          this.dy -= 2;
+          this.dy -= 3;
         }
         else if (DragonCry.events.keys.down) {
-          this.dy += 2;
+          this.dy += 3;
         }
         if (DragonCry.events.keys.left) {
-          this.dx -= 2;
+          this.dx -= 1;
         }
         else if (DragonCry.events.keys.right) {
           this.dx += 2;
         }
       },
       this.crashWith = function(otherobj) {
-        var myleft = this.dx;
-        var myright = this.dx + (this.dwidth);
-        var mytop = this.dheight;
-        var mybottom = this.dheight + (this.dheight);
+        var myleft = this.dx + 20;
+        var myright = this.dx + (this.dwidth) - 10; 
+        var mytop = this.dy + 20;
+        var mybottom = this.dy + (this.dheight) -20;
         var otherleft = otherobj.dx;
         var otherright = otherobj.dx + (otherobj.width);
         var othertop = otherobj.dy;
@@ -137,14 +167,22 @@ var DragonCry = {
        
     },
       this.update = function () {
+          if(DragonCry.game.dragon.dy < -30    ||
+             DragonCry.game.dragon.dy >465   ||
+             DragonCry.game.dragon.dx < -30     ||
+             DragonCry.game.dragon.dx >860 )
+            {
+                DragonCry.game.stop();
+                        }
           for (var i = 0; i < DragonCry.components.obstacles.array.length; i++) {
                 
            if(DragonCry.game.dragon.crashWith(DragonCry.components.obstacles.array[i])) {
                     DragonCry.game.stop();
                 }  
             }
-   
+      
  
+       
         this.move();
         this.tickCount += 1;
         if (this.tickCount > this.TPF) {
@@ -169,7 +207,7 @@ var DragonCry = {
               this.height,
               this.dx,
               this.dy,
-              this.dwidth,
+              this.dwidth ,
               this.dheight,
           );
         } else {
@@ -178,16 +216,6 @@ var DragonCry = {
             this.dy,
             this.width / this.NOF,
             this.height,
-          )
-        }
-
-        if (this.isObstacle) {
-            
-          this.context.clearRect(
-            this.dx,
-            100,
-            this.width / this.NOF,
-            150,
           );
         }
       }
@@ -196,7 +224,6 @@ var DragonCry = {
   game: {
     dragon: undefined,
     obstacles: undefined,
-    score: 0,
     ended: false,
     options: {
       dragon: {
@@ -204,14 +231,14 @@ var DragonCry = {
         height: 100,
         dx: 30,
         dy: 240,
-        dwidth: 100,
+        dwidth: 105,
         dheight: 100,
         NOF: 10,
         TPF: 3,
       },
       obstacle: {
         width: 20,
-        height: 800,
+        height: 200,
         dx: 960,
         dy: 0,
         NOF: 1,
@@ -231,7 +258,9 @@ var DragonCry = {
       DragonCry.components.obstacles.render();
       DragonCry.game.dragon.update();
       DragonCry.game.dragon.render();
-  
+      DragonCry.components.Score.updateScore();
+      DragonCry.components.Score.renderScore();
+      
     },
     startGame() {
       DragonCry.canvas.setupCanvas();
@@ -240,8 +269,11 @@ var DragonCry = {
       DragonCry.events.registerEvents();
       DragonCry.game.gameLoop();
     },
-    stop(){
-        console.log("sražka");
+    stop(){ 
+        alert("Game over \nVaše skore je: " + DragonCry.components.Score.score);
+            
+            document.location.reload(true); 
+           
     }
   },
   events: {
@@ -273,7 +305,9 @@ var DragonCry = {
       else if (kc === 87) DragonCry.events.keys.up = false;
       else if (kc === 68) DragonCry.events.keys.right = false;
       else if (kc === 83) DragonCry.events.keys.down = false;
-    },
+    }
   }
-}
-window.onload = DragonCry.game.startGame;
+};
+/*window.onload = DragonCry.game.startGame;*/
+var click = document.getElementById('mujDrakAnimace');
+click.onclick = DragonCry.game.startGame;
