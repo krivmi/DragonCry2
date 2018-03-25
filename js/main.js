@@ -272,7 +272,7 @@ var DragonCry = {
     stop(){ 
         alert("Game over \nVaše skore je: " + DragonCry.components.Score.score);
             
-            document.location.reload(true); 
+            document.location.reload(); 
            
     }
   },
